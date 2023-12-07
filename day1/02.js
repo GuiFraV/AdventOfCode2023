@@ -16,12 +16,14 @@ function calculateCombinedNumber(line) {
 }
 
 const content = fs.readFileSync('input.txt', 'utf8');
-const lines = content.split('\n');
+const lines = content.trim().split('\n');
 let totalNum = 0;
 
-for (const line of lines) {
+lines.forEach(line => {
   const replacedLine = replaceWordsWithNumbers(line);
-  totalNum += calculateCombinedNumber(replacedLine);
-}
+  const combinedNum = calculateCombinedNumber(replacedLine);
+  console.log(`Line: ${line}, Replaced: ${replacedLine}, Combined Num: ${combinedNum}`);
+  totalNum += combinedNum;
+});
 
 console.log(`Part 2 Result: ${totalNum}`);

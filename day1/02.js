@@ -1,36 +1,27 @@
 import fs from 'fs';
 
-function isNum(char) {
-	return char.match(/[0-9]/i);
+function replaceWordsWithNumbers(line) {
+  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  return line.replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine)\b/g, (match) => words.indexOf(match));
 }
 
+function calculateCombinedNumber(line) {
+  const digits = line.match(/\d/g);
+  if (digits && digits.length > 0) {
+    const firstNum = digits[0];
+    const lastNum = digits[digits.length - 1];
+    return parseInt(firstNum + lastNum, 10);
+  }
+  return 0;
+}
 
-fs.open('input.txt', 'r', (err, fd) => {
-	let totalNum = 0;
-	for (const line of fs.readFileSync(fd, 'utf8').split('\n')) {
-		const originalLine = line;
+const content = fs.readFileSync('input.txt', 'utf8');
+const lines = content.split('\n');
+let totalNum = 0;
 
-		const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+for (const line of lines) {
+  const replacedLine = replaceWordsWithNumbers(line);
+  totalNum += calculateCombinedNumber(replacedLine);
+}
 
-		let replacedLine = '';
-		for (let i = 0; i < line.length; i++) {
-			if (isNum(line[i])) {
-				replacedLine += line[i];
-			}
-			for (let k = 0; k < words.length; k++) {
-				if (line.slice(i, i + words[k].length) == words[k]) {
-					replacedLine += words.indexOf(words[k]);
-					break;
-				}
-			}
-		}
-
-		const firstNum = replacedLine[0];
-		const lastNum = replacedLine[replacedLine.length - 1];
-
-		const combinedNum = parseInt(firstNum + lastNum);
-
-		totalNum += combinedNum;
-	}
-	console.log(`Part 2 Result: ${totalNum}`);
-});
+console.log(`Part 2 Result: ${totalNum}`);
